@@ -8,7 +8,7 @@ sequenceDiagram
     server-->>browser: HTML document
     deactivate server
 
-Note right of server: Redirect automatically, HTTP GET request for location /exampleapp/notes
+Note right of browser: Redirect automatically, HTTP GET request for location /exampleapp/notes
 
     browser->>server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
     activate server
