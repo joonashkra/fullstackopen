@@ -1,3 +1,4 @@
+import Weather from "./Weather";
 
 export const Countries = ({ countries, filterInput, showCountry }) => {
 
@@ -15,6 +16,7 @@ export const Countries = ({ countries, filterInput, showCountry }) => {
       }
       else if(filteredCountries.length === 1) {
         const country = filteredCountries[0]
+        console.log(country)
         return (
           <>
             <h1>{country.name.common}</h1>
@@ -27,6 +29,7 @@ export const Countries = ({ countries, filterInput, showCountry }) => {
               ))}
             </ul>
             <img src={country.flags.png} style={{maxWidth: "100px"}}/>
+            <Weather city={country.capital[0]} />
           </>
         );
       }
