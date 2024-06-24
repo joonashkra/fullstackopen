@@ -1,18 +1,91 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Filter } from './components/Filter'
 import { PersonForm } from './components/PersonForm'
 import { Persons } from './components/Persons'
+import personService from './services/persons'
+import { Notification } from './components/Notification'
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [message, setMessage] = useState(null)
+
+  useEffect(() => {
+    personService
+      .getAll()
+        .then(initialPersons => {
+          setPersons(initialPersons)
+        })
+  }, [])
+
+  const addNewPerson = (event) => {
+    event.preventDefault()
+
+    const existingPerson = persons.find(person => person.name === newName)
+
+    if(existingPerson) {
+      if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        updatePerson(existingPerson)
+      }
+      return
+    }
+
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+
+    personService
+      .create(personObject)
+      .then(newPerson => {
+        setPersons(persons.concat(newPerson))
+        setNewName('')
+        setNewNumber('')
+        setMessage(`Added ${newPerson.name}`)
+        setTimeout(() => {
+          setMessage(null) 
+        }, 5000)
+      })
+  }
+
+  const deletePerson = (person) => {
+    if(window.confirm(`Delete ${person.name}?`)) {
+      personService
+      .remove(person.id)
+        .then(deletedPerson => {
+          setPersons(persons.filter(person => person.id !== deletedPerson.id))
+          setMessage(`Deleted ${deletedPerson.name}`)
+          setTimeout(() => {
+            setMessage(null) 
+          }, 5000)
+        })
+    }
+  }
+
+  const updatePerson = (existingPerson) => {
+    const id = existingPerson.id
+    const updatedPerson = {...existingPerson, number: newNumber}
+
+    personService
+      .update(id, updatedPerson)
+        .then(updatedPerson => {
+          setPersons(persons.map(person => person.id !== id ? person : updatedPerson))
+          setMessage(`Updated ${updatedPerson.name}`)
+          setTimeout(() => {
+            setMessage(null) 
+          }, 5000)
+        })
+        .catch(error => {
+          console.log(error)
+          setMessage(`Error: Information of ${updatedPerson.name} has already been removed from server`)
+          setTimeout(() => {
+            setMessage(null) 
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== id))
+        })
+  }
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
@@ -26,30 +99,12 @@ const App = () => {
     setFilter(event.target.value)
   }
 
-  const addNewPerson = (event) => {
-    event.preventDefault()
-
-    if(persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
-      return
-    }
-
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
-    
-    const updatedPersons = persons.concat(personObject)
-    setPersons(updatedPersons)
-    setNewName('')
-    setNewNumber('')
-  }
-
   const filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter handleFilterChange={handleFilterChange}/>
       <h3>Add New</h3>
       <PersonForm 
@@ -60,7 +115,7 @@ const App = () => {
         addNewPerson={addNewPerson} 
       />
       <h3>Numbers</h3>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} deletePerson={deletePerson}/>
     </div>
   )
 }

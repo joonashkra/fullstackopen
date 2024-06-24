@@ -1,9 +1,12 @@
 
-export const Persons = ({persons}) => {
+export const Persons = ({persons, deletePerson}) => {
   return (
     <div>
         {persons.map(person => 
-        <p key={person.name}>{person.name} {person.number}</p>
+        <div key={person.id} style={{display: "flex"}}>
+          <p>{person.name} {person.number}</p>
+          <button onClick={() => deletePerson(person)}>Delete</button>
+        </div>
       )}
     </div>
   )
