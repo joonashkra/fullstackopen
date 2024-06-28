@@ -77,13 +77,12 @@ const App = () => {
           setMessage(`Updated ${updatedPerson.name}`)
         })
         .catch(error => {
-          console.log(error.response)
           if(error.response.status === 404) {
             setMessage(`Error: Person ${existingPerson.name} already deleted from server.`)
+            setPersons(persons.filter(person => person.id !== id))
           }
           else {
             setMessage(`Error: ${error.response.data.error}`)
-            setPersons(persons.filter(person => person.id !== id))
           }
         })
   }
