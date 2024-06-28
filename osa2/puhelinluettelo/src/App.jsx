@@ -75,6 +75,8 @@ const App = () => {
         .then(updatedPerson => {
           setPersons(persons.map(person => person.id !== id ? person : updatedPerson))
           setMessage(`Updated ${updatedPerson.name}`)
+          setNewName('')
+          setNewNumber('')
         })
         .catch(error => {
           if(error.response.status === 404) {
