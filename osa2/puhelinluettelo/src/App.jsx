@@ -44,9 +44,10 @@ const App = () => {
         setNewName('')
         setNewNumber('')
         setMessage(`Added ${newPerson.name}`)
-        setTimeout(() => {
-          setMessage(null) 
-        }, 5000)
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        setMessage(`Error: ${error.response.data.error}`)
       })
   }
 
@@ -74,17 +75,16 @@ const App = () => {
         .then(updatedPerson => {
           setPersons(persons.map(person => person.id !== id ? person : updatedPerson))
           setMessage(`Updated ${updatedPerson.name}`)
-          setTimeout(() => {
-            setMessage(null) 
-          }, 5000)
         })
         .catch(error => {
-          console.log(error)
-          setMessage(`Error: Information of ${updatedPerson.name} has already been removed from server`)
-          setTimeout(() => {
-            setMessage(null) 
-          }, 5000)
-          setPersons(persons.filter(person => person.id !== id))
+          console.log(error.response)
+          if(error.response.status === 404) {
+            setMessage(`Error: Person ${existingPerson.name} already deleted from server.`)
+          }
+          else {
+            setMessage(`Error: ${error.response.data.error}`)
+            setPersons(persons.filter(person => person.id !== id))
+          }
         })
   }
 
@@ -105,7 +105,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={message} setMessage={setMessage} />
       <Filter handleFilterChange={handleFilterChange}/>
       <h3>Add New</h3>
       <PersonForm 
