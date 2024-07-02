@@ -1,7 +1,3 @@
-const { test, describe } = require('node:test')
-const assert = require('node:assert')
-const listHelper = require('../utils/list_helper')
-
 const listWithOneBlog = [
     {
       _id: '5a422aa71b54a676234d17f8',
@@ -64,43 +60,7 @@ const biggerBlogList = [
     }  
 ]
 
-test('dummy returns one', () => {
-  const blogs = []
-
-  const result = listHelper.dummy(blogs)
-  assert.strictEqual(result, 1)
-})
-
-describe('total likes', () => {
-    test('of empty list is zero', () => { 
-        const result = listHelper.totalLikes([])
-        assert.strictEqual(result, 0)
-    })
-
-    test('when list has only one blog equals the likes of that', () => { 
-        const result = listHelper.totalLikes(listWithOneBlog)
-        assert.strictEqual(result, 5)
-    })
-
-    test('of a bigger list is calculated right', () => { 
-        const result = listHelper.totalLikes(biggerBlogList)
-        assert.strictEqual(result, 36)
-    })
-})
-
-describe('most liked blog', () => { 
-    test('of empty list is zero', () => { 
-        const result = listHelper.favouriteBlog([])
-        assert.strictEqual(result, 0)
-    })
-
-    test('when list has only one blog is that blog', () => { 
-        const result = listHelper.favouriteBlog(listWithOneBlog)
-        assert.strictEqual(result, listWithOneBlog[0])
-    })
-
-    test('of a bigger list is calculated right', () => { 
-        const result = listHelper.favouriteBlog(biggerBlogList)
-        assert.strictEqual(result, biggerBlogList[2])
-    })
-})
+module.exports = {
+    listWithOneBlog,
+    biggerBlogList
+}
