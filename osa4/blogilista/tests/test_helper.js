@@ -60,7 +60,25 @@ const biggerBlogList = [
     }  
 ]
 
+const badUsers = [
+  {
+      username: "ba",
+      password: "abcd1234"
+  },
+  {
+      username: "badUser",
+      password: "ab"
+  },
+  {
+      password: "abcd1234"
+  },
+  {
+      username: "badUser"
+  }
+]
+
 module.exports = {
     listWithOneBlog,
-    biggerBlogList
+    biggerBlogList,
+    badUsers
 }
