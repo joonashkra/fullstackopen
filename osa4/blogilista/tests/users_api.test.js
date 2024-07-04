@@ -1,4 +1,4 @@
-const { test, afterEach, after, describe } = require('node:test')
+const { test, beforeEach, after, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -8,7 +8,7 @@ const testHelper = require("./test_helper")
 
 const api = supertest(app)
 
-afterEach(async () => {
+beforeEach(async () => {
     await User.deleteMany({})
 })
 

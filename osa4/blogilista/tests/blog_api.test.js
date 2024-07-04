@@ -70,6 +70,40 @@ describe('most liked blog', () => {
     })
 })
 
+describe('author with most blogs', () => { 
+    test('of empty list is zero', () => { 
+        const result = listHelper.mostBlogs([])
+        assert.strictEqual(result, 0)
+    })
+
+    test('when list has only one blog is that blog', () => { 
+        const result = listHelper.mostBlogs(testHelper.listWithOneBlog)
+        assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", blogs: 1 })
+    })
+
+    test('of a bigger list is calculated right', () => { 
+        const result = listHelper.mostBlogs(testHelper.biggerBlogList)
+        assert.deepStrictEqual(result, { author: "Robert C. Martin", blogs: 3 })
+    })
+})
+
+describe('author with most likes', () => { 
+    test('of empty list is zero', () => { 
+        const result = listHelper.mostLikes([])
+        assert.strictEqual(result, 0)
+    })
+
+    test('when list has only one blog is that blog', () => { 
+        const result = listHelper.mostLikes(testHelper.listWithOneBlog)
+        assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", likes: 5 })
+    })
+
+    test('of a bigger list is calculated right', () => { 
+        const result = listHelper.mostLikes(testHelper.biggerBlogList)
+        assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", likes: 17 })
+    })
+})
+
 describe('when there are blogs saved', () => { 
     test('correct amount of blogs are returned in json format', async () => { 
         const response = await api.get("/api/blogs")
