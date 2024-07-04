@@ -5,11 +5,7 @@ const User = require('../models/user')
 usersRouter.post("/", async (req, res, next) => {
     const { username, name, password } = req.body
 
-    if(!password || password.length < 3) {
-        const error = new Error('Password is shorter than the minimum allowed length (3).')
-        error.name = 'ValidationError'
-        return next(error)
-    }
+    if(!password || password.length < 3) return res.status(400).json({ error: 'invalid password' })
 
     const passwordHash = await bcrypt.hash(password, 10)
 

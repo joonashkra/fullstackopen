@@ -14,14 +14,9 @@ afterEach(async () => {
 
 describe('creating users', () => { 
     test('should work with valid data', async () => { 
-        const testUser = {
-            username: "testUser123",
-            password: "abcd1234"
-        }
-
         await api
             .post('/api/users')
-            .send(testUser)
+            .send(testHelper.testUser)
             .expect(201)
 
         const users = await User.find({})

@@ -57,7 +57,7 @@ const biggerBlogList = [
       url: "http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html",
       likes: 2,
       __v: 0
-    }  
+    }
 ]
 
 const badUsers = [
@@ -77,8 +77,44 @@ const badUsers = [
   }
 ]
 
+const testUser = {
+  username: "testUser123",
+  password: "abcd1234"
+}
+
+const badBlogs = [
+  {
+      author: "Joonas Heikura",
+      url: "http://testblog/fortesting.html",
+      likes: 100
+  },
+  {
+      title: "Test Blog",
+      author: "Joonas Heikura",
+      likes: 100
+  }
+]
+
+const testBlog = {
+    title: "Test Blog",
+    author: "Test Blog Author",
+    url: "http://testblog.html",
+    likes: 200
+}
+
+const blogToDelete = {
+  title: 'BlogToDelete',
+  author: 'Test Blog Author',
+  url: 'http://testblog.html',
+  likes: 404
+}
+
 module.exports = {
     listWithOneBlog,
     biggerBlogList,
-    badUsers
+    badUsers,
+    testUser,
+    badBlogs,
+    testBlog,
+    blogToDelete
 }

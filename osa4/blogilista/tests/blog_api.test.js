@@ -1,17 +1,32 @@
-const { test, beforeEach, after, describe } = require('node:test')
+const { test, beforeEach, afterEach, after, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require("../models/blog")
+const User = require("../models/user")
 const listHelper = require('../utils/list_helper')
 const testHelper = require("./test_helper")
 
 const api = supertest(app)
 
+let login
+
 beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
     await Blog.insertMany(testHelper.biggerBlogList)
+
+    await api
+        .post('/api/users')
+        .send(testHelper.testUser)
+        .expect(201)
+
+    login = await api
+        .post('/api/login')
+        .send(testHelper.testUser)
+        .expect(200)
 })
 
 test('dummy returns one', () => {
@@ -72,17 +87,11 @@ describe('when there are blogs saved', () => {
 })
 
 describe('addition of a blog', () => { 
-    test('works with valid data', async () => { 
-        const newBlog = {
-            title: "Test Blog",
-            author: "Joonas Heikura",
-            url: "http://testblog/fortesting.html",
-            likes: 1337
-        }
-    
+    test('works with valid data & credentials', async () => { 
         await api
             .post('/api/blogs')
-            .send(newBlog)
+            .set('Authorization', `Bearer ${login.body.token}`)
+            .send(testHelper.testBlog)
             .expect(201)
             .expect('Content-Type', /application\/json/)
     
@@ -90,18 +99,16 @@ describe('addition of a blog', () => {
         const blogTitles = response.body.map(blog => blog.title)
     
         assert.strictEqual(response.body.length, testHelper.biggerBlogList.length + 1)
-        assert(blogTitles.includes('Test Blog'))
+        assert(blogTitles.includes(testHelper.testBlog.title))
     })
 
     test('handles null likes correctly', async () => { 
-        const blogWithNoLikes = {
-            title: "Test Blog",
-            author: "Joonas Heikura",
-            url: "http://testblog/fortesting.html"
-        }
+        const blogWithNoLikes = testHelper.listWithOneBlog[0]
+        delete blogWithNoLikes.likes
     
         await api
             .post('/api/blogs')
+            .set('Authorization', `Bearer ${login.body.token}`)
             .send(blogWithNoLikes)
             .expect(201)
             .expect('Content-Type', /application\/json/)
@@ -110,43 +117,37 @@ describe('addition of a blog', () => {
         assert.strictEqual(response.body[response.body.length-1].likes, 0)
     })
 
-    test('handles null titles or urls correctly', async () => { 
-        const invalidBlogs = [
-            {
-                author: "Joonas Heikura",
-                url: "http://testblog/fortesting.html",
-                likes: 100
-            },
-            {
-                title: "Test Blog",
-                author: "Joonas Heikura",
-                likes: 100
-            }
-        ]
-        
-        await api
+    test('handles null titles or urls correctly', async () => {
+        testHelper.badBlogs.forEach(async badBlog => {
+            await api
             .post('/api/blogs')
-            .send(invalidBlogs[0])
+            .set('Authorization', `Bearer ${login.body.token}`)
+            .send(badBlog)
             .expect(400)
-    
-        await api
-            .post('/api/blogs')
-            .send(invalidBlogs[1])
-            .expect(400)
-    
+        })
+
         const response = await api.get('/api/blogs')
         assert.strictEqual(response.body.length, testHelper.biggerBlogList.length)
     })
 })
 
 describe('deletion of a blog', () => {
-    test('works correctly', async () => { 
+    test('works correctly & with credentials', async () => {
+        const blogToDelete = await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${login.body.token}`)
+            .send(testHelper.blogToDelete)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+
         await api
-            .delete(`/api/blogs/${testHelper.biggerBlogList[0]._id}`)
+            .delete(`/api/blogs/${blogToDelete.body.id}`)
+            .set('Authorization', `Bearer ${login.body.token}`)
             .expect(204)
 
-        const response = await api.get('/api/blogs')
-        assert.strictEqual(response.body.length, testHelper.biggerBlogList.length - 1)
+        const blogs = await api.get('/api/blogs')
+        assert.strictEqual(blogs.body.length, testHelper.biggerBlogList.length)
+        assert(!blogs.body.map(blog => blog.title).includes("blogToDelete"))
     })
 })
 
