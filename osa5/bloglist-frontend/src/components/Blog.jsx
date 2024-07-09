@@ -1,30 +1,32 @@
-import { useState } from "react"
-import Togglable from "./Togglable"
-import blogService from '../services/blogs'
+import { useState, useEffect } from 'react'
+import Togglable from './Togglable'
 
-export const Blog = ({ blog, handleLikeBlog }) => {
+const Blog = ({ blog, handleLikeBlog, handleDeleteBlog, user }) => {
 
   const [likes, setLikes] = useState(blog.likes)
 
   const likeBlog = () => {
-    const updatedBlog = {...blog, likes: likes+1}
+    const updatedBlog = { ...blog, likes: likes+1 }
     handleLikeBlog(updatedBlog)
     setLikes(likes + 1)
   }
 
   return (
-    <>
+    <div>
       <p>{blog.title}, {blog.author}</p>
-      <Togglable buttonLabels={["view", "hide"]}>
-          <ul>
-            <li>{blog.url}</li>
-            <li>
+      <Togglable buttonLabels={['View', 'Hide']}>
+        <ul>
+          <li>{blog.url}</li>
+          <li>
               likes {likes} <button title="like blog" onClick={likeBlog}>like</button>
-            </li>
-            <li>{blog.user.name}</li>
-          </ul>
+          </li>
+          <li>{blog.user.name}</li>
+        </ul>
+        {blog.user.username === user.username &&
+            <button style={{ alignSelf: 'end', backgroundColor: 'red', color: 'white' }} onClick={() => handleDeleteBlog(blog)}>Delete</button>
+        }
       </Togglable>
-    </>
+    </div>
   )
 }
 

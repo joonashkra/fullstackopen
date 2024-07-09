@@ -10,19 +10,19 @@ import { DeleteBlog } from './components/DeleteBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
-    const loggedInUser = window.localStorage.getItem("loggedInUser")
+    const loggedInUser = window.localStorage.getItem('loggedInUser')
     if(loggedInUser) {
       const user = JSON.parse(loggedInUser)
       blogService.setToken(user.token)
@@ -37,23 +37,23 @@ const App = () => {
 
     try {
       const user = await loginService.login({ username, password })
-      window.localStorage.setItem("loggedInUser", JSON.stringify(user))
+      window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername("")
-      setPassword("")
+      setUsername('')
+      setPassword('')
     } catch (error) {
       setMessage({
-        text: "Wrong username or password",
+        text: 'Wrong username or password',
         error: true
       })
     }
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedInUser")
+    window.localStorage.removeItem('loggedInUser')
     setMessage({
-      text: "Loggin out",
+      text: 'Loggin out',
       error: false
     })
     setTimeout(() => {
@@ -73,7 +73,7 @@ const App = () => {
     } catch (error) {
       console.log(error)
       setMessage({
-        text: "Invalid input",
+        text: 'Invalid input',
         error: true
       })
     }
@@ -90,6 +90,7 @@ const App = () => {
   const handleDeleteBlog = async blog => {
     const id = blog.id
     try {
+      if(!window.confirm(`Delete blog "${blog.title}"?`)) return
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(blog => blog.id !== id))
       setMessage({
@@ -104,7 +105,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={message} setMessage={setMessage} /> 
+        <Notification message={message} setMessage={setMessage} />
         <h2>Log in to application</h2>
         <LoginForm handleLogin={handleLogin} username={username} password={password} setPassword={setPassword} setUsername={setUsername} />
       </div>
@@ -114,23 +115,22 @@ const App = () => {
   blogs.sort((a, b) => b.likes - a.likes)
 
   return (
-    <div style={{display: "flex", flexDirection: "column", gap: 10}}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
       <h2>blogs</h2>
-      <Notification message={message} setMessage={setMessage} /> 
-      <div style={{display: "flex", alignItems: "center", gap: 5}}>
+      <Notification message={message} setMessage={setMessage} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
         <p>Logged in as {user.username}</p>
         <button onClick={handleLogout}>Log out</button>
       </div>
-      <div style={{display: "flex", flexDirection: "column", gap: 10}}>
-        {blogs.map(blog =>  
-          <div key={blog.id} style={{display: "flex", border: "1px solid black", width: "max-content", padding: "5px", backgroundColor: "lightgray"}}>
-              <Blog blog={blog} handleLikeBlog={handleLikeBlog} />
-              <DeleteBlog user={user} blog={blog} handleDeleteBlog={handleDeleteBlog} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {blogs.map(blog =>
+          <div key={blog.id} style={{ display: 'flex', border: '1px solid black', width: 'max-content', padding: '5px', backgroundColor: 'lightgray' }}>
+            <Blog blog={blog} handleLikeBlog={handleLikeBlog} handleDeleteBlog={handleDeleteBlog} user={user}/>
           </div>
         )}
       </div>
       <div>
-        <Togglable buttonLabels={["New Blog", "Cancel"]} ref={blogFormRef}>
+        <Togglable buttonLabels={['New Blog', 'Cancel']} ref={blogFormRef}>
           <CreateBlogForm handleCreateBlog={handleCreateBlog}/>
         </Togglable>
       </div>
