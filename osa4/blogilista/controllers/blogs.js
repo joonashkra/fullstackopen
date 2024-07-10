@@ -14,7 +14,7 @@ blogsRouter.post('/', async (request, response) => {
 
     const user = request.user
 
-    const newBlog = { title, author, url, likes, user: user._id }
+    const newBlog = { title, author, url, likes, user }
 
     if(!newBlog.likes) newBlog.likes = 0
 

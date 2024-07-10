@@ -79,6 +79,7 @@ const badUsers = [
 
 const testUser = {
   username: "testUser123",
+  name: "Test User",
   password: "abcd1234"
 }
 
@@ -102,6 +103,45 @@ const testBlog = {
     likes: 200
 }
 
+const testBlogList = [
+  {
+      title: "Test Blog 1",
+      author: "Author 1",
+      url: "http://testblog1.html",
+      likes: 150
+  },
+  {
+      title: "Test Blog 2",
+      author: "Author 2",
+      url: "http://testblog2.html",
+      likes: 220
+  },
+  {
+      title: "Test Blog 3",
+      author: "Author 3",
+      url: "http://testblog3.html",
+      likes: 180
+  },
+  {
+      title: "Test Blog 4",
+      author: "Author 4",
+      url: "http://testblog4.html",
+      likes: 190
+  },
+  {
+      title: "Test Blog 5",
+      author: "Author 5",
+      url: "http://testblog5.html",
+      likes: 170
+  },
+  {
+      title: "Test Blog 6",
+      author: "Author 6",
+      url: "http://testblog6.html",
+      likes: 210
+  }
+]
+
 const blogToDelete = {
   title: 'BlogToDelete',
   author: 'Test Blog Author',
@@ -116,5 +156,6 @@ module.exports = {
     testUser,
     badBlogs,
     testBlog,
-    blogToDelete
+    blogToDelete,
+    testBlogList
 }

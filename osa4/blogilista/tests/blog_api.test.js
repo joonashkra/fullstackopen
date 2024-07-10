@@ -16,8 +16,6 @@ beforeEach(async () => {
     await Blog.deleteMany({})
     await User.deleteMany({})
 
-    await Blog.insertMany(testHelper.biggerBlogList)
-
     await api
         .post('/api/users')
         .send(testHelper.testUser)
@@ -27,6 +25,16 @@ beforeEach(async () => {
         .post('/api/login')
         .send(testHelper.testUser)
         .expect(200)
+
+    for (const blog of testHelper.testBlogList) {
+        await api
+            .post('/api/blogs')
+            .set('Authorization', `Bearer ${login.body.token}`)
+            .send(blog)
+            .expect(201)
+            .expect('Content-Type', /application\/json/);
+    }
+
 })
 
 test('dummy returns one', () => {
@@ -187,11 +195,11 @@ describe('deletion of a blog', () => {
 
 describe('updating a blog', () => { 
     test('works correctly', async () => { 
-        const blog = testHelper.biggerBlogList[0]
+        const blog = await Blog.findOne({ title: 'Test Blog 1' })
         const updatedBlog = {...blog, likes: 100}
 
         await api
-            .put(`/api/blogs/${blog._id}`)
+            .put(`/api/blogs/${blog.id}`)
             .send(updatedBlog)
             .expect(200)
 

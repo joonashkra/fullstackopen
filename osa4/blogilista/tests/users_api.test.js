@@ -25,6 +25,7 @@ describe('creating users', () => {
 
     test('should not work with invalid data', async () => {
         const usersBefore = await User.find({})
+        console.log(usersBefore)
 
         testHelper.badUsers.forEach(async badUser => {
             await api
@@ -34,6 +35,7 @@ describe('creating users', () => {
         })
 
         const usersAfter = await User.find({})
+        console.log(usersAfter)
         assert.strictEqual(usersBefore.length, usersAfter.length)
     })
 })
