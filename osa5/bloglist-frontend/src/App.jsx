@@ -4,9 +4,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import { LoginForm } from './components/LoginForm'
 import { Notification } from './components/Notification'
-import { CreateBlogForm } from './components/CreateBlogForm'
+import CreateBlogForm from './components/CreateBlogForm'
 import Togglable from './components/Togglable'
-import { DeleteBlog } from './components/DeleteBlog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -125,7 +124,7 @@ const App = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {blogs.map(blog =>
           <div key={blog.id} style={{ display: 'flex', border: '1px solid black', width: 'max-content', padding: '5px', backgroundColor: 'lightgray' }}>
-            <Blog blog={blog} handleLikeBlog={handleLikeBlog} handleDeleteBlog={handleDeleteBlog} user={user}/>
+            <Blog blog={blog} handleLikeBlog={handleLikeBlog} handleDeleteBlog={handleDeleteBlog} user={user} />
           </div>
         )}
       </div>

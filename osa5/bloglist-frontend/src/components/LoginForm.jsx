@@ -5,11 +5,11 @@ export const LoginForm = ({ handleLogin, username, password, setUsername, setPas
     <form onSubmit={handleLogin}>
       <div>
         <label htmlFor='username'>Username</label>
-        <input type='text' value={username} name='psername' onChange={({ target }) => setUsername(target.value)} />
+        <input type='text' value={username} name='username' onChange={({ target }) => setUsername(target.value)} data-testid="username" />
       </div>
       <div>
         <label htmlFor='password'>Password</label>
-        <input type='password' value={password} name='password' onChange={({ target }) => setPassword(target.value)} />
+        <input type='password' value={password} name='password' onChange={({ target }) => setPassword(target.value)} data-testid="password" />
       </div>
       <button type='submit'>Login</button>
     </form>

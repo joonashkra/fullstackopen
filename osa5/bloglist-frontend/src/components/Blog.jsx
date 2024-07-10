@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Togglable from './Togglable'
 
 const Blog = ({ blog, handleLikeBlog, handleDeleteBlog, user }) => {
@@ -12,12 +12,12 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog, user }) => {
   }
 
   return (
-    <div>
+    <div data-testid="blog-element">
       <p>{blog.title}, {blog.author}</p>
       <Togglable buttonLabels={['View', 'Hide']}>
         <ul>
           <li>{blog.url}</li>
-          <li>
+          <li data-testid="blog-likes">
               likes {likes} <button title="like blog" onClick={likeBlog}>like</button>
           </li>
           <li>{blog.user.name}</li>
