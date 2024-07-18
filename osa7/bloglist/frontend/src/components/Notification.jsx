@@ -4,13 +4,11 @@ export const Notification = () => {
     const notification = useSelector((state) => state.notification)
 
     const style = {
-        color: 'green',
-        backgroundColor: 'lightgray',
+        color: 'lightgreen',
         fontSize: '20px',
-        border: '2px solid green',
         margin: '5px',
         padding: '5px',
-        width: 'fit-content',
+        borderRadius: 5,
     }
 
     if (notification.content === null) return null
@@ -20,7 +18,11 @@ export const Notification = () => {
             style={
                 !notification.isError
                     ? style
-                    : { ...style, color: 'red', border: '2px solid red' }
+                    : {
+                          ...style,
+                          color: 'red',
+                          textDecoration: 'underline solid red',
+                      }
             }
         >
             {notification.content}

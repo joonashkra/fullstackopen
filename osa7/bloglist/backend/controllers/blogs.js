@@ -1,9 +1,12 @@
 const blogsRouter = require('express').Router()
 const Blog = require("../models/blog")
 const User = require("../models/user")
+const Comment = require("../models/comment")
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({})
+    .populate('user', { username: 1, name: 1 })
+    .populate('comments', { text: 1 })
   response.json(blogs)
 })
 
@@ -29,6 +32,27 @@ blogsRouter.post('/', async (request, response) => {
     response.status(201).json(savedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+
+    console.log("comment:", request.body.text)
+    console.log("blogid:", request.params.id)
+
+    const comment = new Comment({
+        text: request.body.text,
+        blog: request.params.id
+    })
+
+    await comment.save()
+
+    const blog = await Blog.findById(request.params.id)
+    if(!blog) return response.status(404).json({ message: 'content missing' })
+    
+    blog.comments.push(comment)
+    await blog.save()
+
+    response.status(201).json(comment)
+}) 
+
 blogsRouter.delete('/:id', async (request, response) => {
     const blog = await Blog.findById(request.params.id)
 
@@ -47,7 +71,12 @@ blogsRouter.put('/:id', async (request, response) => {
 
     const blog = { title, author, url, likes }
 
-    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { username: 1, name: 1 })
+    console.log(blog)
+
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+        .populate('user', { username: 1, name: 1 })
+        .populate('comments', { text: 1 })
+
     response.json(updatedBlog)
 })
 

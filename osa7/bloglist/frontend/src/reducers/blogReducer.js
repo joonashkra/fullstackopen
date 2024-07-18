@@ -18,7 +18,6 @@ export const initBlogs = () => {
     return async (dispatch) => {
         try {
             const blogs = await blogService.getAll()
-            blogs.sort((a, b) => b.likes - a.likes)
             dispatch(setBlogs(blogs))
         } catch (error) {
             console.error(error)
@@ -60,6 +59,26 @@ export const deleteBlog = (blog) => {
             await blogService.remove(blog)
             dispatch(setBlogs(blogs.filter((blog) => blog.id !== id)))
             return 204
+        } catch (error) {
+            return error.response.status
+        }
+    }
+}
+
+export const commentBlog = (blog, comment) => {
+    return async (dispatch, getState) => {
+        try {
+            const blogs = getState().blogs
+            const newComment = await blogService.comment(blog, comment)
+            const updatedBlog = {
+                ...blog,
+                comments: [...blog.comments, newComment],
+            }
+            const updatedBlogs = blogs.map((b) =>
+                b.id === blog.id ? updatedBlog : b
+            )
+            dispatch(setBlogs(updatedBlogs))
+            return 201
         } catch (error) {
             return error.response.status
         }
