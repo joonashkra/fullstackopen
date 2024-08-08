@@ -46,6 +46,10 @@ const toNewPatientEntry = (object: unknown): NewPatient => {
             occupation: parseString('occupation', object.occupation)
         };
 
+        if('ssn' in object) {
+            newEntry.ssn = parseString('ssn', object.ssn);
+        }
+
         return newEntry;
     }
 
