@@ -16,4 +16,10 @@ router.post('/', (req, res) => {
     res.json(newPatient);
 });
 
+router.get('/:id', (req, res) => {
+    console.log("hello");
+    const id = req.params.id;
+    res.send(patientService.getEntryById(id));
+});
+
 export default router;
