@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import patientService from '../../services/patients';
 import { useParams } from 'react-router-dom';
 import { Diagnosis, Patient } from '../../types';
+import EntryDetails from './EntryDetails';
 
 const PatientPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const { id } = useParams();
@@ -14,7 +15,6 @@ const PatientPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
         setPatient(patient);
       }
     };
-    
     fetchPatient();
   }, [id]);
 
@@ -27,16 +27,16 @@ const PatientPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
 
   return (
     <div>
-      <p>{patient.name}</p>
-      <p>{patient.gender}</p>
-      <p>{patient.occupation}</p>
-      <p>{patient.dateOfBirth}</p>
-      <p>{patient.ssn}</p>
-      <p>Entries</p>
+      <h1>{patient.name}</h1>
+      <p>Gender: {patient.gender}</p>
+      <p>Occupation: {patient.occupation}</p>
+      <p>SSN: {patient.ssn}</p>
+      <p>DOB: {patient.dateOfBirth}</p>
+      <h2>Entries</h2>
       {patient.entries.map(entry => (
         <div key={entry.id}>
-          <p>{entry.description}</p>
-          <p>{entry.date}</p>
+          <p style={{ fontWeight: "bold" }}>{entry.date}: {entry.type}</p>
+          <p style={{ fontStyle: "italic" }}>{entry.description}</p>
           <ul>
             {entry.diagnosisCodes?.map((code, index) => (
               <li key={index}>
@@ -44,6 +44,9 @@ const PatientPage = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
               </li>
             ))}
           </ul>
+          <EntryDetails entry={entry} />
+          <p>Diagnose by {entry.specialist}</p>
+          <hr/>
         </div>
       ))}
     </div>
