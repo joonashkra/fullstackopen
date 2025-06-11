@@ -1,5 +1,5 @@
 import data from '../../data/patientData';
-import { NewPatient, NonSensitivePatientEntry, Patient } from '../types';
+import { Entry, NewEntry, NewPatient, NonSensitivePatientEntry, Patient } from '../types';
 import { v1 as uuid } from 'uuid';
 
 
@@ -34,9 +34,27 @@ const addPatient = (patient: NewPatient): Patient => {
     return newPatient;
 };
 
+const addEntryToPatient = (patientId: string, entry: NewEntry): Patient => {
+    const id = uuid();
+    const newEntry: Entry = { id, ...entry }
+
+    console.log("Patient Found", patients.find(patient => patient.id === patientId))
+
+    const index = patients.findIndex(patient => patient.id === patientId)
+    console.log("index;", index)
+
+    if(index < 0) {
+        throw new Error('Failed to add entry: Patient not found.')
+    }
+
+    patients[index].entries.push(newEntry)
+    return patients[index]
+};
+
 export default {
     getEntries,
     getEntryById,
     getNonSensitiveEntries,
-    addPatient
+    addPatient,
+    addEntryToPatient
 };
