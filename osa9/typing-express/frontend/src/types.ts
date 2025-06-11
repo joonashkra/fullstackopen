@@ -39,12 +39,12 @@ interface Discharge {
 }
 
 interface HospitalEntry extends BaseEntry {
-  type: "Hospital";
+  type: EntryType;
   discharge: Discharge;
 }
 
 interface OccupationalHealthcareEntry extends BaseEntry {
-  type: "OccupationalHealthcare";
+  type: EntryType;
   employerName: string;
   sickLeave?: SickLeave;
 }
@@ -57,7 +57,7 @@ export enum HealthCheckRating {
 }
 
 interface HealthCheckEntry extends BaseEntry {
-  type: "HealthCheck";
+  type: EntryType
   healthCheckRating: HealthCheckRating;
 }
 
@@ -67,3 +67,13 @@ export type Entry =
   | HealthCheckEntry;
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+
+type UnionOmit <T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+export type NewEntry = UnionOmit<Entry, 'id'>;
+
+export enum EntryType {
+  HealthCheck = "HealthCheck",
+  OccupationalHealthcare = "OccupationalHealthcare",
+  Hospital = "Hospital"
+}
