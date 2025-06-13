@@ -3,6 +3,8 @@ import { ALL_AUTHORS, EDIT_AUTHOR } from '../queries'
 
 const Authors = (props) => {
 
+  const token = props.token
+
   const result = useQuery(ALL_AUTHORS)
   const [ editAuthor ] = useMutation(EDIT_AUTHOR, {
     refetchQueries: [ { query: ALL_AUTHORS } ]
@@ -22,7 +24,6 @@ const Authors = (props) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const formValues = Object.fromEntries(formData)
-    console.log(formValues)
 
     if ('authorName' in formValues && 'authorBirthyear' in formValues) {
       const { authorName: name, authorBirthyear: setBornTo } = formValues
@@ -33,20 +34,18 @@ const Authors = (props) => {
     }
   }
 
-
-
   return (
     <div>
       <h2>authors</h2>
       <table>
         <tbody>
           <tr>
-            <th></th>
+            <th>name</th>
             <th>born</th>
             <th>books</th>
           </tr>
           {authors.map((a) => (
-            <tr key={a.name}>
+            <tr key={a.id}>
               <td>{a.name}</td>
               <td>{a.born}</td>
               <td>{a.bookCount}</td>
@@ -55,20 +54,24 @@ const Authors = (props) => {
         </tbody>
       </table>
       <hr/>
-      <h3>Set author birthyear</h3>
-      <form onSubmit={submitBirthyear}>
-        <label htmlFor="authorName">name</label>
-        <select name="authorName" id="author-name-select">
-          {authors.map(a => (
-            <option value={a.name}>{ a.name }</option>
-          ))}
-        </select>
-        <br/>
-        <label htmlFor="auhtorBirthyear">born</label>
-        <input type="text" name='authorBirthyear' />
-        <br/>
-        <button type='submit'>update author</button>
-      </form>
+      {token && authors.length && 
+        <div>
+          <h3>Set author birthyear</h3>
+          <form onSubmit={submitBirthyear}>
+            <label htmlFor="authorName">name</label>
+            <select name="authorName" id="author-name-select">
+              {authors.map(a => (
+                <option key={a.id} value={a.name}>{ a.name }</option>
+              ))}
+            </select>
+            <br/>
+            <label htmlFor="auhtorBirthyear">born</label>
+            <input type="text" name='authorBirthyear' />
+            <br/>
+            <button type='submit'>update author</button>
+          </form>
+        </div> 
+      }
     </div>
   )
 }
